@@ -6,6 +6,7 @@ import android.app.WallpaperManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.widget.Toast
 import com.sample.wallpaperswitcher.WallpaperSwitchBroadcast
 import java.io.File
 import java.util.*
@@ -40,11 +41,16 @@ class WallPaperUtils {
         fun changeWallpaper(context: Context?){
             val fileDir = File("/sdcard/Pictures/")
 
-            val file = fileDir.listFiles()
+            val files = fileDir.listFiles()
 
-            val index = (0..file.size-1).random()
+            if(files.size < 1){
+                Toast.makeText(context, "No images in directory", Toast.LENGTH_LONG).show()
+                return
+            }
 
-            val filePath = file[index].getPath()
+            val index = (0..files.size-1).random()
+
+            val filePath = files[index].getPath()
             val bitmap = BitmapFactory.decodeFile(filePath)
 
             val wallpaperManager = WallpaperManager.getInstance(context)
