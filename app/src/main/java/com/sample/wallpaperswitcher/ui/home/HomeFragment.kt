@@ -1,5 +1,7 @@
 package com.sample.wallpaperswitcher.ui.home
 
+import android.Manifest
+import android.app.Activity
 import android.content.ComponentName
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -13,9 +15,15 @@ import com.sample.wallpaperswitcher.R
 import com.sample.wallpaperswitcher.WallpaperSwitchBroadcast
 import com.sample.wallpaperswitcher.databinding.HomeFragmentBinding
 import com.sample.wallpaperswitcher.utils.WallPaperUtils
+import pub.devrel.easypermissions.EasyPermissions
+
+
+
 
 
 class HomeFragment : Fragment(), HomeEventHandler {
+
+    val RC_STORAGE= 1
     override fun sendWallpaperAlarm() {
         val receiver = ComponentName(context, WallpaperSwitchBroadcast::class.java)
         context?.packageManager?.setComponentEnabledSetting(
@@ -23,7 +31,16 @@ class HomeFragment : Fragment(), HomeEventHandler {
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
             PackageManager.DONT_KILL_APP
         )
-        WallPaperUtils.sendWallPaperChangeBroadcast(context);
+
+        val perms = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        if( EasyPermissions.hasPermissions(context!!, *perms)){
+            WallPaperUtils.sendWallPaperChangeBroadcast(context)
+        }else{
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(context as Activity, getString(R.string.read_storage_rationale),
+                RC_STORAGE, *perms);
+        }
+
     }
 
     companion object {
@@ -51,6 +68,4 @@ class HomeFragment : Fragment(), HomeEventHandler {
         binding.viewmodel = viewModel
 
     }
-
-
 }

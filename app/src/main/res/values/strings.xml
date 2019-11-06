@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">WallpaperSwitcher</string>
+    <string name="read_storage_rationale">Please enable read storage permission</string>
 </resources>

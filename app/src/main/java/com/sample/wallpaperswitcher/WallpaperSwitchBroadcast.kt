@@ -11,9 +11,10 @@ class WallpaperSwitchBroadcast : BroadcastReceiver() {
         when {
             intent?.action.equals(WallPaperUtils.CHANGE_WALLPAPER_ACTION) -> {
                 Toast.makeText(context, "Wallpaper Changed", Toast.LENGTH_LONG).show()
+                WallPaperUtils.changeWallpaper(context)
             }
             intent?.action.equals(WallPaperUtils.BOOT_COMPLETED_ACTION) -> {
-                Toast.makeText(context, "Boot Completed", Toast.LENGTH_LONG).show()
+                WallPaperUtils.sendWallPaperChangeBroadcast(context)
             }
         }
 

@@ -2,9 +2,12 @@ package com.sample.wallpaperswitcher.utils
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.app.WallpaperManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import com.sample.wallpaperswitcher.WallpaperSwitchBroadcast
+import java.io.File
 import java.util.*
 
 class WallPaperUtils {
@@ -32,6 +35,16 @@ class WallPaperUtils {
                 1000 * 60 * 1,
                 pendingIntent
             )
+        }
+
+        fun changeWallpaper(context: Context?){
+            val file = File("/sdcard/Pictures/android_wallpaper.jpg")
+
+            val filePath = file.getPath()
+            val bitmap = BitmapFactory.decodeFile(filePath)
+
+            val wallpaperManager = WallpaperManager.getInstance(context)
+            wallpaperManager.setBitmap(bitmap)
         }
     }
 }
