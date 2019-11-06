@@ -38,9 +38,13 @@ class WallPaperUtils {
         }
 
         fun changeWallpaper(context: Context?){
-            val file = File("/sdcard/Pictures/android_wallpaper.jpg")
+            val fileDir = File("/sdcard/Pictures/")
 
-            val filePath = file.getPath()
+            val file = fileDir.listFiles()
+
+            val index = (0..file.size-1).random()
+
+            val filePath = file[index].getPath()
             val bitmap = BitmapFactory.decodeFile(filePath)
 
             val wallpaperManager = WallpaperManager.getInstance(context)
