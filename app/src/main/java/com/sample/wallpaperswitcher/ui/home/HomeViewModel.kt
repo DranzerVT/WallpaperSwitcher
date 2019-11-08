@@ -12,4 +12,9 @@ class HomeViewModel : ViewModel() {
         mEventHandler.sendWallpaperAlarm()
 
     }
+
+    fun browseFolder(){
+
+        mEventHandler.startFolderBrowse()
+    }
 }

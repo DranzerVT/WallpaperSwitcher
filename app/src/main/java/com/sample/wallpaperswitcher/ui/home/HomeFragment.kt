@@ -16,12 +16,15 @@ import com.sample.wallpaperswitcher.WallpaperSwitchBroadcast
 import com.sample.wallpaperswitcher.databinding.HomeFragmentBinding
 import com.sample.wallpaperswitcher.utils.WallPaperUtils
 import pub.devrel.easypermissions.EasyPermissions
-
-
-
-
+import android.content.Intent
+import android.widget.Toast
 
 class HomeFragment : Fragment(), HomeEventHandler {
+    val READ_REQUEST_CODE = 2
+    override fun startFolderBrowse() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+        startActivityForResult(intent, READ_REQUEST_CODE)
+    }
 
     val RC_STORAGE= 1
     override fun sendWallpaperAlarm() {
@@ -67,5 +70,12 @@ class HomeFragment : Fragment(), HomeEventHandler {
         viewModel.mEventHandler = this
         binding.viewmodel = viewModel
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == READ_REQUEST_CODE){
+            Toast.makeText(context, "chosen folder = "+ data?.dataString, Toast.LENGTH_LONG).show()
+        }
     }
 }
