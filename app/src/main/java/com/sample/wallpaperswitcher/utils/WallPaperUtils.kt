@@ -39,18 +39,25 @@ class WallPaperUtils {
         }
 
         fun changeWallpaper(context: Context?){
-            val fileDir = File("/sdcard/Pictures/")
+
+            val preferenceUtil = SharedPreferenceUtil(SharedPreferenceUtil.WALLPAPER_PREF_NAME,context)
+            var folderPath = preferenceUtil.getString(SharedPreferenceUtil.FOLDER_PREF)
+            if(folderPath.equals("")){
+                Toast.makeText(context, "Please specify folder path", Toast.LENGTH_LONG).show()
+                return
+            }
+            val fileDir = File(folderPath)
 
             val files = fileDir.listFiles()
 
-            if(files.size < 1){
+            if(files == null || files.isEmpty()){
                 Toast.makeText(context, "No images in directory", Toast.LENGTH_LONG).show()
                 return
             }
 
-            val index = (0..files.size-1).random()
+            val index = (files.indices).random()
 
-            val filePath = files[index].getPath()
+            val filePath = files[index].path
             val bitmap = BitmapFactory.decodeFile(filePath)
 
             val wallpaperManager = WallpaperManager.getInstance(context)

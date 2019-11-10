@@ -17,13 +17,36 @@ import com.sample.wallpaperswitcher.databinding.HomeFragmentBinding
 import com.sample.wallpaperswitcher.utils.WallPaperUtils
 import pub.devrel.easypermissions.EasyPermissions
 import android.content.Intent
+import android.os.Environment
 import android.widget.Toast
+import com.sample.wallpaperswitcher.utils.SharedPreferenceUtil
+
+import com.nononsenseapps.filepicker.FilePickerActivity
+import com.nononsenseapps.filepicker.Utils
 
 class HomeFragment : Fragment(), HomeEventHandler {
     val READ_REQUEST_CODE = 2
     override fun startFolderBrowse() {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+       /* val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
         startActivityForResult(intent, READ_REQUEST_CODE)
+*/
+        // This always works
+        val i = Intent(context, FilePickerActivity::class.java)
+        // This works if you defined the intent filter
+        // Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+
+        // Set these depending on your use case. These are the defaults.
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false)
+        i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE_AND_DIR)
+
+        // Configure initial directory by specifying a String.
+        // You could specify a String like "/storage/emulated/0/", but that can
+        // dangerous. Always use Android's API calls to get paths to the SD-card or
+        // internal memory.
+        i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().path)
+
+        startActivityForResult(i, READ_REQUEST_CODE)
     }
 
     val RC_STORAGE= 1
@@ -61,7 +84,7 @@ class HomeFragment : Fragment(), HomeEventHandler {
             inflater,
             R.layout.home_fragment, container, false
         )
-        return binding.getRoot()
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -75,7 +98,12 @@ class HomeFragment : Fragment(), HomeEventHandler {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == READ_REQUEST_CODE){
-            Toast.makeText(context, "chosen folder = "+ data?.dataString, Toast.LENGTH_LONG).show()
+            if( data?.dataString != null && data.dataString != ""){
+                val filepath = Utils.getFileForUri(data.data)
+
+                val preferenceUtil = SharedPreferenceUtil(SharedPreferenceUtil.WALLPAPER_PREF_NAME,context)
+                preferenceUtil.setPreference(SharedPreferenceUtil.FOLDER_PREF,filepath.absolutePath)
+            }
         }
     }
 }
